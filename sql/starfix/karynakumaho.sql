@@ -1,0 +1,1 @@
+UPDATE `quest_template` SET `ReqCreatureOrGOId1`=-185156 WHERE `entry`=10866 LIMIT 1;
