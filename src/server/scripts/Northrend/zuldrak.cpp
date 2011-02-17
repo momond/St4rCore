@@ -249,6 +249,7 @@ enum eGurgthock
     QUEST_AMPHITHEATER_ANGUISH_YGGDRAS_1          = 12932,
     QUEST_AMPHITHEATER_ANGUISH_MAGNATAUR          = 12933,
     QUEST_AMPHITHEATER_ANGUISH_FROM_BEYOND        = 12934,
+    QUEST_CHAMPION_ANGUISH                        = 12948,
 
     NPC_ORINOKO_TUSKBREAKER                       = 30020,
     NPC_KORRAK_BLOODRAGER                         = 30023,
@@ -262,6 +263,7 @@ enum eGurgthock
     NPC_FIEND_AIR                                 = 30045,
     NPC_FIEND_FIRE                                = 30042,
     NPC_FIEND_EARTH                               = 30043,
+	NPC_VLADOF                                    = 30022,
 
     SAY_QUEST_ACCEPT_TUSKARRMAGEDON               = -1571031,
     SAY_QUEST_ACCEPT_KORRAK_1                     = -1571033,
@@ -301,7 +303,7 @@ static BossAndAdd Boss[]=
 
 const Position SpawnPosition[] =
 {
-    {5754.692f, -2939.46f, 286.276123f, 5.156380f}, // stinkbeard || orinoko || korrak
+    {5754.692f, -2939.46f, 286.276123f, 5.156380f}, // stinkbeard || orinoko || korrak || +Vladof
     {5762.054199f, -2954.385010f, 273.826955f, 5.108289f},  //yggdras
     {5776.855f, -2989.77979f, 272.96814f, 5.194f} // elementals
 };
@@ -399,6 +401,10 @@ public:
                         case QUEST_AMPHITHEATER_ANGUISH_FROM_BEYOND:
                             uiTimer = 2000;
                             uiPhase = 12;
+                            break;
+						case QUEST_CHAMPION_ANGUISH:
+                            uiTimer = 2000;
+                            uiPhase = 15;
                             break;
                    }
                         break;
@@ -521,6 +527,15 @@ public:
                             if (Creature* pCreature = me->SummonCreature(Boss[uiBossRandom].uiBoss,SpawnPosition[2],TEMPSUMMON_CORPSE_DESPAWN, 1000))
                                 pCreature->AI()->SetData(1,uiBossRandom);
                             uiPhase = 0;
+						case 15:
+                            me->MonsterYell("From the Savage Ledge of Icecrown, Vladof the Butcher and his mammoth, Enormos! There ain't gonna be a thing left of our challengers, folks! Prepare for a downpour of blood, guts and tears!",LANG_UNIVERSAL,0);
+                            uiTimer = 2500;
+                            uiPhase = 16;
+                            break;
+                        case 16:
+                            me->SummonCreature(NPC_VLADOF, SpawnPosition[0], TEMPSUMMON_CORPSE_DESPAWN, 1000);
+                            uiPhase = 0;
+                            uiTimer = 0;
                             break;
                     }
                 }else uiTimer -= uiDiff;
@@ -548,6 +563,9 @@ public:
             case QUEST_AMPHITHEATER_ANGUISH_FROM_BEYOND:
                 pCreature->AI()->SetData(1, pQuest->GetQuestId());
                 break;
+			case QUEST_CHAMPION_ANGUISH:
+				pCreature->AI()->SetData(1, pQuest->GetQuestId());
+				break;
         }
 
         pCreature->AI()->SetGUID(pPlayer->GetGUID());
@@ -1416,6 +1434,141 @@ public:
     }
 };
 
+/*####
+## npc_vladof_the_butcher
+####*/
+
+enum eVladof
+{
+    SPELL_BLOOD_BOIL = 55974,
+	SPELL_BLOOD_PLAGUE = 55973,
+	SPELL_BLOOD_PRESENCE = 50689,
+    SPELL_HYSTERIA = 55975,
+    SPELL_DEFLECTION = 55976,
+	SPELL_WIRLDWIND = 55977
+};
+
+class npc_vladof_the_butcher : public CreatureScript
+{
+public:
+    npc_vladof_the_butcher() : CreatureScript("npc_vladof_the_butcher") { }
+ 
+	struct npc_vladof_the_butcherAI : public npc_escortAI
+    {
+        npc_vladof_the_butcherAI(Creature* pCreature) : npc_escortAI(pCreature)
+        {
+            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
+            me->SetReactState(REACT_PASSIVE);
+			Start(true,true, 0, NULL);
+            SetDespawnAtEnd(false);
+        }
+
+		uint32 uiBloodPlagueTimer;
+        uint32 uiBloodBoilTimer;
+		uint32 uiWirlwindTimer;
+
+        bool bHysteria;
+        bool bSpellDeflection;
+
+		void Reset()
+        {
+            me->AddAura(SPELL_BLOOD_PRESENCE,me);
+            uiBloodPlagueTimer = 10000;
+            uiBloodBoilTimer = 15000;
+			uiWirlwindTimer = 20000;
+            bHysteria = false;
+            bSpellDeflection = false;
+        }
+
+		void WaypointReached(uint32 uiI)
+        {
+            switch(uiI)
+            {
+                case 8:
+                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
+                    me->SetReactState(REACT_AGGRESSIVE);
+                    me->SetHomePosition(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation());
+                    break;
+            }
+        }
+
+		void UpdateAI(const uint32 uiDiff)
+        {
+            npc_escortAI::UpdateAI(uiDiff);
+
+            if (!UpdateVictim())
+                return;
+
+            if (Unit* victim = me->getVictim())
+            {
+                if (victim->GetPositionZ() >= 286.276f)
+                {
+                    std::list<HostileReference *> t_list = me->getThreatManager().getThreatList();
+                    for (std::list<HostileReference *>::const_iterator itr = t_list.begin(); itr!= t_list.end(); ++itr)
+                    {
+                        if (Unit* pUnit = Unit::GetUnit(*me, (*itr)->getUnitGuid()))
+                        {
+                            if (pUnit->GetPositionZ() <= 286.276f)
+                            {
+                                me->getThreatManager().resetAllAggro();
+                                me->AddThreat(pUnit,5.0f);
+                                break;
+                            }
+                            EnterEvadeMode();
+                        }
+                    }
+                }
+            }
+
+			if (uiBloodPlagueTimer <= uiDiff)
+            {
+                DoCast(me->getVictim(), SPELL_BLOOD_PLAGUE);
+                uiBloodPlagueTimer = 10000;
+            } else uiBloodPlagueTimer -= uiDiff;
+
+			if (uiBloodBoilTimer <= uiDiff)
+            {
+                DoCastAOE(SPELL_BLOOD_BOIL);
+				uiBloodBoilTimer = 15000;
+            } else uiBloodBoilTimer -= uiDiff;
+
+			if (uiWirlwindTimer <= uiDiff)
+            {
+                DoCast(me->getVictim(), SPELL_WIRLDWIND);
+                uiWirlwindTimer = 20000;
+            } else uiWirlwindTimer -= uiDiff;
+
+			if (!bHysteria && HealthBelowPct(31)) //nyontek frenzy saurfang..haha
+            {
+                 bHysteria = true;
+                 DoCast(me,SPELL_HYSTERIA);
+            }
+
+			if (!bSpellDeflection && HealthBelowPct(66))
+            {
+                 bSpellDeflection = true;
+                 DoCast(me,SPELL_DEFLECTION);
+			}
+
+			DoMeleeAttackIfReady();
+		}
+
+		void JustDied(Unit* pKiller)
+        {
+             if (Player* pPlayer = pKiller->GetCharmerOrOwnerPlayerOrPlayerItself())
+                pPlayer->GetCharmerOrOwnerPlayerOrPlayerItself()->GroupEventHappens(QUEST_CHAMPION_ANGUISH, pKiller);
+
+            std::string sText = ("I DON'T BELIEVE IT! WE HAVE A WE HAVE A NEW CHAMPION OF ANGUISH! Vladof the Butcher has been defeated by a ragtag group of nobodies!");
+			me->MonsterYell(sText.c_str(),LANG_UNIVERSAL,0);
+        }
+    };
+
+    CreatureAI *GetAI(Creature *creature) const
+    {
+        return new npc_vladof_the_butcherAI(creature);
+    }
+};
+
 void AddSC_zuldrak()
 {
     new npc_drakuru_shackles;
@@ -1431,4 +1584,5 @@ void AddSC_zuldrak()
     new npc_elemental_lord;
     new npc_fiend_elemental;
     new go_scourge_enclosure;
+	new npc_vladof_the_butcher;
 }
