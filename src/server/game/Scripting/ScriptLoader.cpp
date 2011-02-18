@@ -107,6 +107,8 @@ void AddSC_boss_quatermasterzigris();
 void AddSC_boss_pyroguard_emberseer();
 void AddSC_boss_gyth();
 void AddSC_boss_rend_blackhand();
+void AddSC_instance_blackrock_spire();       //tambahan bwt achiv leeeroy!
+void AddSC_blackrock_spire();                //idem
 void AddSC_boss_razorgore();                 //Blackwing lair
 void AddSC_boss_vael();
 void AddSC_boss_broodlord();
@@ -710,6 +712,8 @@ void AddEasternKingdomsScripts()
     AddSC_boss_pyroguard_emberseer();
     AddSC_boss_gyth();
     AddSC_boss_rend_blackhand();
+	AddSC_instance_blackrock_spire();       //tambahan bwt achiv leeeroy!
+	AddSC_blackrock_spire();                //idem
     AddSC_boss_razorgore();                 //Blackwing lair
     AddSC_boss_vael();
     AddSC_boss_broodlord();
