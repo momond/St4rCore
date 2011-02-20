@@ -1,22 +1,22 @@
-----Instance TDB nya ngaco harus null2-in dl
+-- Instance TDB nya ngaco harus nullin dl
 
 DELETE FROM `instance_template` WHERE `map` IN (229);
 INSERT INTO `instance_template` (`map`, `parent`, `startLocX`, `startLocY`, `startLocZ`, `startLocO`, `script`, `allowMount`) 
 VALUES (229, 0, NULL, NULL, NULL, NULL, 'instance_blackrock_spire', 0);
 
-----masukin script creature whelpnya, dan set jadi attackable
+-- masukin script creature whelpnya, dan set jadi attackable
 
 DELETE FROM `creature_template` WHERE `entry` IN (10161);
 INSERT INTO `creature_template` (`entry`, `difficulty_entry_1`, `difficulty_entry_2`, `difficulty_entry_3`, `KillCredit1`, `KillCredit2`, `modelid1`, `modelid2`, `modelid3`, `modelid4`, `name`, `subname`, `IconName`, `gossip_menu_id`, `minlevel`, `maxlevel`, `exp`, `faction_A`, `faction_H`, `npcflag`, `speed_walk`, `speed_run`, `scale`, `rank`, `mindmg`, `maxdmg`, `dmgschool`, `attackpower`, `dmg_multiplier`, `baseattacktime`, `rangeattacktime`, `unit_class`, `unit_flags`, `dynamicflags`, `family`, `trainer_type`, `trainer_spell`, `trainer_class`, `trainer_race`, `minrangedmg`, `maxrangedmg`, `rangedattackpower`, `type`, `type_flags`, `lootid`, `pickpocketloot`, `skinloot`, `resistance1`, `resistance2`, `resistance3`, `resistance4`, `resistance5`, `resistance6`, `spell1`, `spell2`, `spell3`, `spell4`, `spell5`, `spell6`, `spell7`, `spell8`, `PetSpellDataId`, `VehicleId`, `mingold`, `maxgold`, `AIName`, `MovementType`, `InhabitType`, `Health_mod`, `Mana_mod`, `Armor_mod`, `RacialLeader`, `questItem1`, `questItem2`, `questItem3`, `questItem4`, `questItem5`, `questItem6`, `movementId`, `RegenHealth`, `equipment_id`, `mechanic_immune_mask`, `flags_extra`, `ScriptName`, `WDBVerified`) VALUES (10161, 0, 0, 0, 0, 0, 397, 0, 0, 0, 'Rookery Whelp', NULL, NULL, 0, 56, 57, 0, 16, 16, 0, 1.11111, 1.14286, 1, 0, 98, 130, 0, 238, 1, 2000, 0, 1, 0, 8, 0, 0, 0, 0, 0, 68, 99, 24, 2, 0, 10161, 0, 100001, 0, 171, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 1, 3, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 'npc_rookey_whelp', 12340);
 
 
-----Script telor ciceknye
+-- Script telor ciceknye
 
 DELETE FROM `gameobject_template` WHERE `entry` IN (175124);
 INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `name`, `IconName`, `castBarCaption`, `unk1`, `faction`, `flags`, `size`, `questItem1`, `questItem2`, `questItem3`, `questItem4`, `questItem5`, `questItem6`, `data0`, `data1`, `data2`, `data3`, `data4`, `data5`, `data6`, `data7`, `data8`, `data9`, `data10`, `data11`, `data12`, `data13`, `data14`, `data15`, `data16`, `data17`, `data18`, `data19`, `data20`, `data21`, `data22`, `data23`, `AIName`, `ScriptName`, `WDBVerified`) 
 VALUES (175124, 6, 3891, 'Rookery Egg', '', '', '', 14, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 3, 15745, 1, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 'go_rookey_egg', 12340);
 
-----taro telor ciceknye ngacak2 d ruangan rookery BRS..klo d youtube si d pojok2an (54 biji aje)
+-- taro telor ciceknye ngacak2 d ruangan rookery BRS..klo d youtube si d pojok2an (54 biji aje)
 DELETE FROM `gameobject` WHERE `id` IN (175124);
 INSERT INTO `gameobject` (`guid`, `id`, `map`, `spawnMask`, `phaseMask`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`) VALUES (153116, 175124, 229, 1, 1, 81.3858, -334.421, 91.5078, 2.94612, 0, 0, 0.995228, 0.0975801, 300, 0, 1);
 INSERT INTO `gameobject` (`guid`, `id`, `map`, `spawnMask`, `phaseMask`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`) VALUES (153172, 175124, 229, 1, 1, 88.7449, -334.902, 91.511, 2.96605, 0, 0, 0.99615, 0.0876606, 300, 0, 1);
