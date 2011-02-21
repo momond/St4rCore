@@ -345,6 +345,20 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
         return;
     }
 
+    // you should be able to use your spells on some vehicles
+    if (const Vehicle* veh = mover->GetVehicleKit())
+    {
+        SeatMap::const_iterator seat;
+        for (seat = veh->m_Seats.begin(); seat != veh->m_Seats.end(); ++seat)
+            if (seat->second.passenger == _player->GetGUID())
+                break;
+
+        if (seat->second.seatInfo && seat->second.seatInfo->m_flags & VEHICLE_SEAT_FLAG_CAN_ATTACK)
+            mover = _player;
+        else if (spellId=61437) // hack for Eye of Eternity
+            mover = _player;
+    }
+
     if (mover->GetTypeId() == TYPEID_PLAYER)
     {
         // not have spell in spellbook or spell passive and not casted by client
