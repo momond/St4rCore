@@ -136,11 +136,11 @@ class instance_pit_of_saron : public InstanceMapScript
                         if (_teamInInstance == ALLIANCE)
                             creature->UpdateEntry(NPC_RESCUED_SLAVE_ALLIANCE, ALLIANCE);
                         break;
-                    case NPC_MARTIN_VICTUS_1:
+                    case NPC_GORKUN_IRONSKULL_1:
                         if (_teamInInstance == ALLIANCE)
                             creature->UpdateEntry(NPC_MARTIN_VICTUS_1, ALLIANCE);
                         break;
-                    case NPC_MARTIN_VICTUS_2:
+                    case NPC_GORKUN_IRONSKULL_2:
                         if (_teamInInstance == ALLIANCE)
                             creature->UpdateEntry(NPC_MARTIN_VICTUS_2, ALLIANCE);
                         break;
